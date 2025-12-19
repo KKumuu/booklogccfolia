@@ -154,7 +154,7 @@
             margin: 0 auto;
         }
 
-        #modalOverlay {
+        .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
@@ -169,23 +169,89 @@
             padding: 24px;
             border-radius: 16px;
             width: 90%;
-            max-width: 320px;
+            max-width: 360px;
             text-align: center;
             border: 3px solid var(--receipt-accent);
+        }
+
+        /* Action Buttons on Item Hover */
+        .item-actions {
+            position: absolute;
+            left: -45px;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .group:hover .item-actions {
+            opacity: 1;
+        }
+        .item-action-btn {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 2px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .item-action-btn:hover {
+            background: #f8f8f8;
+            border-color: #ccc;
+        }
+        .item-action-btn .material-symbols-outlined {
+            font-size: 16px;
         }
     </style>
 </head>
 <body class="p-4 md:p-6 min-h-screen">
 
-    <!-- Custom Modal -->
-    <div id="modalOverlay">
+    <!-- Confirm Modal -->
+    <div id="confirmModalOverlay" class="modal-overlay">
         <div class="modal-content">
             <span class="material-symbols-outlined text-5xl text-red-500 mb-4">warning</span>
             <h3 class="text-lg font-bold mb-2">정말 초기화할까요?</h3>
             <p class="text-sm text-gray-500 mb-6">작성된 모든 BGM 목록이 삭제됩니다.</p>
             <div class="flex gap-2">
-                <button onclick="closeModal()" class="flex-1 p-2 border-2 border-gray-300 rounded-lg font-bold">취소</button>
+                <button onclick="closeConfirmModal()" class="flex-1 p-2 border-2 border-gray-300 rounded-lg font-bold">취소</button>
                 <button id="modalConfirmBtn" class="flex-1 p-2 bg-red-500 text-white rounded-lg font-bold">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-lg font-bold mb-4 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">edit</span> 항목 수정하기
+            </h3>
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 mb-1 block">곡 제목</label>
+                    <input type="text" id="editMusicTitle" class="w-full p-2 border-2 border-gray-200 rounded-lg outline-none focus:border-accent text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 mb-1 block">유튜브 링크/ID</label>
+                        <input type="text" id="editYtLink" class="w-full p-2 border-2 border-gray-200 rounded-lg outline-none focus:border-accent text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 mb-1 block">재생 시간</label>
+                        <input type="text" id="editDuration" maxlength="5" class="w-full p-2 border-2 border-gray-200 rounded-lg outline-none text-center focus:border-accent text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 mb-1 block">장면 (Scene)</label>
+                    <input type="text" id="editSceneTag" class="w-full p-2 border-2 border-gray-200 rounded-lg outline-none focus:border-accent text-sm">
+                </div>
+            </div>
+            <div class="flex gap-2 mt-6">
+                <button onclick="closeEditModal()" class="flex-1 p-2 border-2 border-gray-300 rounded-lg font-bold">취소</button>
+                <button onclick="saveEdit()" class="flex-1 p-2 bg-pink-500 text-white rounded-lg font-bold">저장하기</button>
             </div>
         </div>
     </div>
@@ -384,6 +450,7 @@
         let items = [];
         let currentSlot = "1";
         let currentFontPreset = "1";
+        let editingItemId = null;
 
         window.onload = () => {
             loadSlot("1");
@@ -432,7 +499,7 @@
 
         function updateColor(varName, colorValue) {
             document.documentElement.style.setProperty(varName, colorValue);
-            generateDenseBarcode(); // Refresh barcode color
+            generateDenseBarcode(); 
             renderItems();
         }
 
@@ -579,6 +646,59 @@
             renderItems();
         }
 
+        function moveItem(index, direction) {
+            if (direction === -1 && index > 0) {
+                const temp = items[index];
+                items[index] = items[index - 1];
+                items[index - 1] = temp;
+            } else if (direction === 1 && index < items.length - 1) {
+                const temp = items[index];
+                items[index] = items[index + 1];
+                items[index + 1] = temp;
+            } else {
+                return;
+            }
+            renderItems();
+        }
+
+        function openEditModal(id) {
+            editingItemId = id;
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('editMusicTitle').value = item.title;
+            document.getElementById('editYtLink').value = item.link;
+            document.getElementById('editDuration').value = item.duration;
+            document.getElementById('editSceneTag').value = item.scene;
+            
+            document.getElementById('editModalOverlay').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModalOverlay').style.display = 'none';
+            editingItemId = null;
+        }
+
+        function saveEdit() {
+            if (!editingItemId) return;
+            const index = items.findIndex(i => i.id === editingItemId);
+            if (index === -1) return;
+
+            const title = document.getElementById('editMusicTitle').value.trim();
+            const linkInput = document.getElementById('editYtLink').value.trim();
+            const videoId = extractYouTubeId(linkInput);
+            const finalLink = videoId ? `https://youtu.be/${videoId}` : linkInput;
+            const duration = document.getElementById('editDuration').value || "00:00";
+            const scene = document.getElementById('editSceneTag').value || "-";
+
+            if (!title) { showToast("곡 제목을 입력해주세요."); return; }
+
+            items[index] = { ...items[index], title, link: finalLink, duration, scene };
+            renderItems();
+            closeEditModal();
+            showToast("수정되었습니다.");
+        }
+
         function renderItems() {
             const list = document.getElementById('itemList');
             const totalCount = document.getElementById('totalCount');
@@ -593,6 +713,12 @@
 
             list.innerHTML = items.map((item, idx) => `
                 <div class="text-[11px] grid grid-cols-12 gap-2 group relative items-start font-bold leading-snug">
+                    <div class="item-actions" data-html2canvas-ignore>
+                        <button onclick="moveItem(${idx}, -1)" class="item-action-btn" title="위로"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                        <button onclick="moveItem(${idx}, 1)" class="item-action-btn" title="아래로"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                        <button onclick="openEditModal(${item.id})" class="item-action-btn" title="수정"><span class="material-symbols-outlined">edit</span></button>
+                        <button onclick="removeItem(${item.id})" class="item-action-btn text-red-400 hover:text-red-600" title="삭제"><span class="material-symbols-outlined">delete</span></button>
+                    </div>
                     <div class="col-span-6 text-left break-all pr-1">
                         <span class="flex items-center gap-1 flex-wrap">
                             <span class="opacity-30 mr-1 text-[9px]">${(idx+1).toString().padStart(2, '0')}</span>
@@ -603,7 +729,6 @@
                     </div>
                     <div class="col-span-2 text-center opacity-70">${item.duration}</div>
                     <div class="col-span-4 text-right break-words pl-1" style="color: var(--receipt-text)">${item.scene}</div>
-                    <button onclick="removeItem(${item.id})" class="absolute -left-8 top-0 opacity-0 group-hover:opacity-100 text-red-500 font-bold px-1 transition-opacity">×</button>
                 </div>
             `).join('');
 
@@ -632,12 +757,12 @@
             window.open(`https://www.youtube.com/watch_videos?video_ids=${videoIds.join(',')}`, '_blank');
         }
 
-        function openResetModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
-        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+        function openResetModal() { document.getElementById('confirmModalOverlay').style.display = 'flex'; }
+        function closeConfirmModal() { document.getElementById('confirmModalOverlay').style.display = 'none'; }
         function confirmReset() {
             items = [];
             renderItems();
-            closeModal();
+            closeConfirmModal();
             showToast("초기화되었습니다.");
         }
 
@@ -688,28 +813,21 @@
             const noBg = document.getElementById('noBgToggle').checked;
             const originalShadow = receipt.style.boxShadow;
             const originalBg = receipt.style.backgroundColor;
-            
             receipt.style.boxShadow = 'none';
             if (noBg) {
                 receipt.style.backgroundColor = 'transparent';
                 document.getElementById('zigzagBottom').style.opacity = '0';
             }
-
             showToast("이미지 생성 중...");
             try {
-                const canvas = await html2canvas(captureArea, {
-                    backgroundColor: null,
-                    scale: 3,
-                    useCORS: true
-                });
+                const canvas = await html2canvas(captureArea, { backgroundColor: null, scale: 3, useCORS: true });
                 const link = document.createElement('a');
-                link.download = `TRPG_BGM_Receipt_${Date.now()}.png`;
+                link.download = `BGM_Receipt_${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast("저장 완료!");
-            } catch (err) {
-                showToast("저장 실패");
-            } finally {
+            } catch (err) { showToast("저장 실패"); }
+            finally {
                 receipt.style.boxShadow = originalShadow;
                 receipt.style.backgroundColor = originalBg;
                 document.getElementById('zigzagBottom').style.opacity = '1';
