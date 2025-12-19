@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 스마트 텍스트 교정기</title>
+    <!-- 구글 폰트 추가: 본문용 명조체 (Noto Serif KR) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: white;
+            padding: 30px; /* 패딩 축소 */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* 그림자 은은하게 */
+            width: 100%;
+            max-width: 900px; /* 폭 약간 축소 */
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* 간격 축소 */
+        }
+        header {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h1 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+            font-size: 20px; /* 폰트 크기 축소 */
+            letter-spacing: -0.5px;
+        }
+        .desc {
+            color: #7f8c8d;
+            font-size: 13px; /* 설명 폰트 축소 */
+            margin: 0;
+        }
+        .editors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: 400px; /* 높이 축소 (500 -> 400) */
+        }
+        .editor-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        label {
+            font-weight: 600;
+            color: #34495e;
+            font-size: 13px;
+        }
+        textarea {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            resize: none;
+            
+            /* 폰트 변경: 명조체 적용 */
+            font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+            font-size: 14px; /* 본문 폰트 축소 (16 -> 14) */
+            line-height: 1.6;
+            
+            background-color: #fcfcfc;
+            transition: all 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        /* outputText 스타일 */
+        #outputText {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+        
+        /* 버튼 영역을 위로 올리기 위한 스타일 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 24px; /* 버튼 크기 약간 축소 */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+        .btn-copy {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-copy:hover {
+            background-color: #27ae60;
+            transform: translateY(-1px);
+        }
+
+        /* 옵션 영역 스타일 정리 */
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: #f1f2f6;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #555;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+        input[type="checkbox"] {
+            accent-color: #3498db;
+        }
+        
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .editors {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            textarea {
+                height: 200px;
+            }
+            .options {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>PDF 스마트 텍스트 교정기</h1>
+            <p class="desc">PDF에서 깨진 텍스트를 붙여넣으세요. 소설, TRPG 용어 및 조사를 자동으로 교정합니다.</p>
+        </header>
+        
+        <div class="editors">
+            <div class="editor-group">
+                <label for="inputText">원본 텍스트 (Ctrl+V)</label>
+                <textarea id="inputText" placeholder="예: 그는 차가 운 눈 빛으로 무기 질적 인 공간을 응시 했 다."></textarea>
+            </div>
+            <div class="editor-group">
+                <label for="outputText">교정 결과 (수정 가능)</label>
+                <textarea id="outputText" spellcheck="true" placeholder="결과가 여기에 표시됩니다."></textarea>
+            </div>
+        </div>
+
+        <!-- 버튼을 위로 올림 -->
+        <div class="controls">
+            <button class="btn-primary" onclick="processText()">텍스트 교정하기</button>
+            <button class="btn-copy" onclick="copyToClipboard()">결과 복사</button>
+        </div>
+
+        <!-- 옵션 영역 -->
+        <div class="options">
+            <label class="checkbox-label">
+                <input type="checkbox" id="useDict" checked>
+                <span>단어장 적용</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="fixJosa" checked>
+                <span>스마트 조사 붙이기</span>
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="removeHyphen" checked>
+                <span>영어 하이픈(-) 삭제</span>
+            </label>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // [단어장] 
+        // ==========================================
+        const userWords = [
+            // --- 소설/서술형 형용사 및 부사 (New!) ---
+            "무기질적인", "차가운", "서늘한", "싸늘한", "건조한", "무심한", "담담한", "냉철한",
+            "희미한", "흐릿한", "창백한", "투명한", "불투명한", "선명한", "강렬한", "어두운",
+            "칠흑", "정적", "고요", "침묵", "심연", "혼돈", "공허", "잔혹한", "비정한",
+            "나지막이", "가만히", "멍하니", "우두커니", "물끄러미", "빤히", "조용히", "은밀히",
+            "천천히", "서서히", "급격히", "맹목적인", "필연적인", "압도적인", "절망적인",
+            "기계적인", "본능적인", "충동적인", "이질적인", "경이로운", "기괴한", "섬뜩한",
+            "쓸쓸히", "홀로", "묵묵히", "여전히", "아득한", "아련한", "몽환적인",
+            
+            // --- TRPG 공통 ---
+            "플레이어", "마스터", "캐릭터", "시나리오", "캠페인", "세션", "핸드아웃",
+            "룰북", "다이스", "주사위", "판정", "실패", "성공", "대성공", "대실패", 
+            "펌블", "크리티컬", "보너스", "패널티", "난이도", "초기화", "설정",
+            
+            // --- CoC (크툴루의 부름) ---
+            "탐사자", "수호자", "키퍼", "크툴루", "신화", "이성", "산치", "광기",
+            "근력", "민첩", "건강", "외모", "지능", "크기", "교육", "정신력",
+            "관찰력", "듣기", "심리학", "자료조사", "설득", "말재주", "위협", "매혹",
+            "오컬트", "역사", "자연", "회피", "근접전", "사격", "응급처치", "의학",
+            "정신분석", "기계수리", "전기수리", "열쇠공", "은밀행동", "추격",
+            
+            // --- DX3 (더블크로스 3rd) ---
+            "오버드", "레네게이드", "더블크로스", "신드롬", "트라이브리드", "퓨어브리드", "크로스브리드",
+            "침식률", "로이스", "타이타스", "백트랙", "리저렉션", "워딩", "충동", "이펙트",
+            "엔젤헤일로", "발로르", "블랙독", "브람스토커", "키마이라", "엑자일", 
+            "하누만", "모르페우스", "노이만", "오르쿠스", "샐러맨더", "솔라리스",
+            "신체", "감각", "정신", "사회", "클라이맥스", "오프닝", "엔딩", "미들",
+            "마이너", "메이저", "리액션", "오토", "셋업", "클린업", "이니셔티브",
+            
+            // --- 접속사/연결어 ---
+            "그리고", "그러나", "그런데", "그러므로", "따라서", "왜냐하면", "하지만",
+            "혹은", "또는", "및", "즉", "곧", "단", "만약", "비록", "아무리", "게다가",
+            "사실상", "어쨌든", "어차피", "오히려", "일부러", "정말로", "제대로",
+
+            // --- 어미/보조용언 ---
+            "입니다", "습니다", "합니다", "됩니다", "칩니다", "랍니다",
+            "했습", "겠습", "없습", "있습", "않습",
+            "하십시오", "하세요", "이요", "나요", "군요", "네요", "던가요",
+            "것입니다", "수있다", "수없다"
+        ];
+
+        function processText() {
+            const input = document.getElementById('inputText').value;
+            const useDict = document.getElementById('useDict').checked;
+            const useSmartFix = document.getElementById('fixJosa').checked;
+            const removeHyphen = document.getElementById('removeHyphen').checked;
+
+            if (!input.trim()) {
+                alert("텍스트를 입력해주세요.");
+                return;
+            }
+
+            // 1. 문단 나누기
+            const paragraphs = input.split(/\n\s*\n/);
+
+            const processedParagraphs = paragraphs.map(para => {
+                let text = para;
+
+                // 2. 기본 줄바꿈 정리
+                text = text.replace(/([.?!])\n/g, "$1 "); // 문장 끝 줄바꿈 -> 공백
+                if (removeHyphen) {
+                    text = text.replace(/-\n/g, ""); 
+                    text = text.replace(/- /g, "");
+                }
+                text = text.replace(/\n/g, " "); // 일반 줄바꿈 -> 공백
+                text = text.replace(/\s+/g, " "); // 연속 공백 제거
+
+                // 3. 단어장(Dictionary) 기반 합치기
+                if (useDict) {
+                    const sortedWords = userWords.sort((a, b) => b.length - a.length);
+                    sortedWords.forEach(word => {
+                        const regexStr = word.split('').join('\\s*');
+                        const regex = new RegExp(regexStr, 'g');
+                        text = text.replace(regex, word);
+                    });
+                }
+
+                // 4. 스마트 조사/어미 붙이기
+                if (useSmartFix) {
+                    // (1) 1글자 조사
+                    const particles1 = "은|는|이|가|을|를|의|에|로|와|과|도|만|서|고|며|께|뿐|쯤|테";
+                    const regex1 = new RegExp(`([가-힣a-zA-Z0-9])\\s+(${particles1})(?=[^가-힣a-zA-Z0-9]|$)`, 'g');
+                    text = text.replace(regex1, "$1$2");
+
+                    // (2) 2글자 이상 조사/어미
+                    const particles2 = "에서|에는|으로|하고|해서|이나|니다|들이|들을|들은|들의|까지|부터|조차|마저|에게|보다|라고|이다|인지|지만|도록|처럼|만큼";
+                    const regex2 = new RegExp(`([가-힣a-zA-Z0-9])\\s+(${particles2})(?=[^가-힣a-zA-Z0-9]|$)`, 'g');
+                    text = text.replace(regex2, "$1$2");
+
+                    // (3) 특수문자 정리
+                    text = text.replace(/\s+([.,?!])/g, "$1");
+                    text = text.replace(/\(\s+/g, "(").replace(/\s+\)/g, ")");
+                }
+
+                return text.trim();
+            });
+
+            document.getElementById('outputText').value = processedParagraphs.join('\n\n');
+        }
+
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            outputText.select();
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(outputText.value).then(() => {
+                    const btn = document.querySelector('.btn-copy');
+                    const originalText = btn.innerText;
+                    btn.innerText = "복사 완료!";
+                    setTimeout(() => btn.innerText = originalText, 1500);
+                });
+            } else {
+                document.execCommand('copy');
+                alert("복사되었습니다.");
+            }
+        }
+    </script>
+</body>
+</html>
