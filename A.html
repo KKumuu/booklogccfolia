@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCfolia 리플레이북 변환기</title>
-    
+    <link rel="icon" type="image/png" href="/trpgforkk/favicon.png">
     <!-- 폰트 로드 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css">
     
     <!-- 아이콘 -->
@@ -37,10 +37,7 @@
         }
 
         :root {
-            /* UI 폰트 */
             --font-ui: 'Inter', 'NanumSquare', sans-serif;
-            
-            /* 책 본문 폰트 변수 */
             --font-serif: 'GounBatang', serif;
             --font-sans: 'NanumSquare', sans-serif;
             --font-mono: 'Courier Prime', monospace;
@@ -54,19 +51,17 @@
             --margin-bottom: 25mm; 
             --content-height: 165mm; 
 
-            /* 폰트/줄간격 (JS 제어) */
             --font-size-body: 10.5pt;
             --line-height-body: 1.6;
         }
 
         /* UI 기본 스타일 (Clean White Theme) */
         body { 
-            background-color: #f8fafc; /* Slate-50 */
-            color: #334155; /* Slate-700 */
+            background-color: #f1f5f9; 
+            color: #334155; 
             font-family: var(--font-ui);
         }
 
-        /* 커스텀 스크롤바 */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -76,12 +71,15 @@
         #sidebar {
             background: #ffffff;
             border-right: 1px solid #e2e8f0;
+            box-shadow: none;
         }
         
+        .sidebar-header { border-bottom: 1px solid #e2e8f0; background: #ffffff; }
+        
         .section-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #94a3b8;
+            font-size: 0.7rem; /* 텍스트 크기 축소 */
+            font-weight: 800; /* 굵게 */
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
@@ -90,75 +88,69 @@
             gap: 0.4rem;
         }
 
-        .input-wrapper {
-            margin-bottom: 1.25rem;
-        }
+        .input-wrapper { margin-bottom: 1rem; }
 
         .ui-input {
             width: 100%;
-            background-color: #f1f5f9; /* Slate-100 */
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            padding: 0.6rem 0.75rem;
-            font-size: 0.875rem;
+            background-color: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.25rem;
+            padding: 0.4rem 0.6rem; /* 패딩 축소 */
+            font-size: 0.8rem; /* 폰트 축소 */
             color: #334155;
             transition: all 0.2s;
             outline: none;
         }
-        .ui-input:focus {
-            background-color: #fff;
-            border-color: #6366f1; /* Indigo-500 */
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
+        .ui-input:focus { border-color: #6366f1; }
         .ui-input::placeholder { color: #94a3b8; }
 
-        .ui-file-input {
-            padding: 0.5rem;
-            font-size: 0.75rem;
+        /* 파일 입력 버튼 커스텀 */
+        .custom-file-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; height: 50px; /* 높이 축소 */
+            border: 1px dashed #cbd5e1; border-radius: 6px;
+            background-color: #f8fafc; color: #64748b;
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; font-size: 0.75rem;
         }
-        .ui-file-input::file-selector-button {
-            background-color: #fff;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.25rem;
-            padding: 0.2rem 0.5rem;
-            margin-right: 0.5rem;
-            font-size: 0.75rem;
-            color: #475569;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .ui-file-input::file-selector-button:hover {
-            background-color: #f8fafc;
-            border-color: #94a3b8;
-        }
+        .custom-file-btn:hover { border-color: #6366f1; color: #6366f1; background-color: #eff6ff; }
+        .custom-file-btn i { margin-bottom: 2px; }
 
         /* 토글 버튼 그룹 */
         .ui-toggle-group {
             display: flex;
             background-color: #f1f5f9;
-            padding: 0.25rem;
-            border-radius: 0.5rem;
+            padding: 2px;
+            border-radius: 0.3rem;
+            border: 1px solid #e2e8f0;
         }
-        .ui-toggle-btn {
+        .toggle-btn {
             flex: 1;
-            padding: 0.4rem 0;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #64748b;
-            border-radius: 0.375rem;
+            padding: 0.25rem 0; /* 패딩 축소 */
+            text-align: center;
+            font-size: 0.75rem; /* 폰트 축소 */
+            border-radius: 0.2rem;
             transition: all 0.2s;
+            color: #64748b;
+            cursor: pointer;
         }
-        .ui-toggle-btn.active {
+        .toggle-btn.active {
             background-color: #fff;
             color: #0f172a;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            font-weight: 700; /* 굵게 */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .ui-toggle-btn:hover:not(.active) {
-            color: #334155;
+        .toggle-btn:hover:not(.active) { color: #334155; background-color: #e2e8f0; }
+
+        /* 사이드바 항목 라벨 (볼드 적용) */
+        .input-wrapper > label { 
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.75rem; color: #475569; 
+            margin-bottom: 0.25rem; font-weight: 800; /* Bold 효과 */
         }
 
-        /* --- 책 페이지 스타일 --- */
+        /* --- 책 페이지 스타일 (테두리/그림자 완전 제거) --- */
         .book-page {
             width: var(--page-width); 
             height: var(--page-height);
@@ -167,19 +159,17 @@
             position: relative; 
             overflow: hidden; 
             margin: 0 auto;
-            
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e2e8f0;
+            box-shadow: none;
+            border: none; 
             display: none; 
             padding: var(--margin-top) var(--margin-outer) var(--margin-bottom) var(--margin-inner);
             color: #111; 
             transform-origin: center top;
-            /* 인쇄 설정 */
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
         .book-page.active { display: block; }
-        .book-page.cover-page { padding: 0 !important; border: none; }
+        .book-page.cover-page { padding: 0 !important; }
 
         .page-number {
             position: absolute; bottom: 12mm; left: 0; width: 100%;
@@ -194,34 +184,33 @@
 
         /* --- 오버레이 & 모달 --- */
         .overlay {
-            position: fixed; inset: 0; background: rgba(255,255,255,0.8);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
             z-index: 100; display: none;
             justify-content: center; align-items: center;
-            backdrop-filter: blur(8px);
-        }
-        .progress-bar-container {
-            width: 100%; max-width: 240px; height: 4px;
-            background-color: #e2e8f0; border-radius: 9999px;
-            overflow: hidden; margin-top: 20px;
-        }
-        .progress-bar-fill {
-            height: 100%; background-color: #6366f1; width: 0%;
-            transition: width 0.1s linear;
+            backdrop-filter: blur(4px);
         }
         
         .modal-box {
             background: #fff; 
             border: 1px solid #e2e8f0;
-            padding: 2rem; 
-            border-radius: 1rem; 
+            padding: 1.5rem; 
+            border-radius: 0.75rem; 
             width: 360px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 판정 예시 모달 */
+        .preview-modal-box {
+            width: 500px;
+            max-width: 90vw;
+            background: #f8fafc;
         }
 
         /* 편집 모드 하이라이트 */
         [contenteditable="true"] { outline: 1px dashed transparent; cursor: text; transition: all 0.2s; border-radius: 2px; }
         body.edit-mode-active [contenteditable="true"]:hover {
             background-color: rgba(99, 102, 241, 0.05);
+            outline: 1px dashed #cbd5e1;
         }
         body.edit-mode-active [contenteditable="true"]:focus {
             outline: 1px solid #6366f1; 
@@ -252,10 +241,7 @@
         .font-serif { font-family: var(--font-serif) !important; }
         .font-sans { font-family: var(--font-sans) !important; }
         
-        .log-entry { 
-            margin-bottom: 1.2rem; 
-            break-inside: avoid; 
-        }
+        .log-entry { margin-bottom: 1.2rem; break-inside: avoid; }
         
         .dialogue-box { display: flex; flex-direction: column; gap: 4px; }
         .dialogue-box .char-name {
@@ -267,14 +253,11 @@
             background-color: #334155; border-radius: 50%;
         }
 
-        /* 대본형(좌우) 레이아웃 */
-        .dialogue-box.layout-side { 
-            flex-direction: row; gap: 16px; align-items: flex-start;
-        }
+        .dialogue-box.layout-side { flex-direction: row; gap: 16px; align-items: flex-start; }
         .dialogue-box.layout-side .char-name {
             width: 24mm; flex-shrink: 0; text-align: left; 
             justify-content: flex-start; margin: 0; padding-right: 0;
-            border-right: 2px solid #e2e8f0; /* 부드러운 구분선 */
+            border-right: 2px solid #e2e8f0; 
             font-size: 9pt; height: 100%;
         }
         .dialogue-box.layout-side .char-name::before { display: none; } 
@@ -295,53 +278,105 @@
         }
         .narration-box.align-center { text-align: center; }
         .narration-box.align-left { text-align: left; padding-left: 0; border-left: none; }
-        
-        /* 판정 박스 (Clean Card Style) */
+
+        /* --- 판정 박스 디자인 (Refined & Ink-Saving) --- */
         .dice-container {
-            border: 1px solid #cbd5e1; /* Slate-300 */
-            border-radius: 6px;
-            margin: 16px auto; 
-            width: 80%; 
-            overflow: hidden;
-            font-size: 9pt;
-            background: #fff;
-            color: #0f172a;
-            break-inside: avoid;
+            width: 85%; margin: 1.5rem auto; 
+            font-size: 9pt; background: #fff; color: #111;
+            break-inside: avoid; text-align: center;
+            position: relative; box-sizing: border-box;
         }
+        /* 공통 헤더/바디 */
         .dice-header {
-            background: #f1f5f9; /* Slate-100 */
-            padding: 8px 12px;
-            border-bottom: 1px solid #e2e8f0;
-            font-weight: 700; 
-            font-family: var(--font-sans);
-            color: #334155;
-            font-size: 9pt;
-            text-align: center;
-            letter-spacing: 0.02em;
+            padding: 6px 12px; font-weight: 700; font-family: var(--font-sans);
+            text-align: center; letter-spacing: 0.02em; word-break: keep-all;
         }
         .dice-body {
-            padding: 12px;
-            font-family: 'Courier Prime', 'NanumSquare', monospace;
-            line-height: 1.6;
-            font-size: 9.5pt;
-            color: #1e293b;
-            text-align: center;
-            word-break: break-all;
+            padding: 8px 12px; font-family: 'Courier Prime', 'NanumSquare', monospace;
+            line-height: 1.5; font-size: 9.5pt; color: #333;
         }
+        .dice-result-wrapper { text-align: center; padding-bottom: 10px; }
         .dice-result {
-            display: inline-block;
-            margin: 0 auto 12px auto;
-            padding: 4px 12px;
-            text-align: center;
-            font-weight: 700;
-            background: #fff; 
-            color: #0f172a;
-            border: 1px solid #0f172a; /* 진한 테두리 */
-            border-radius: 9999px;
-            font-family: var(--font-sans);
-            font-size: 9.5pt;
+            display: inline-block; padding: 2px 10px;
+            font-weight: 800; font-family: var(--font-sans); font-size: 9pt;
         }
-        .dice-result-wrapper { text-align: center; }
+
+        /* 1. Simple (기본) - 모던, 얇은 선 */
+        .dice-container.style-default {
+            border: 1px solid #cbd5e1; /* 아주 얇은 회색 선 */
+            border-radius: 4px;
+        }
+        .dice-container.style-default .dice-header {
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 0.85rem;
+        }
+        .dice-container.style-default .dice-result {
+            border: 1px solid #475569;
+            border-radius: 100px;
+            color: #1e293b;
+        }
+
+        /* 2. Memo (노트) - 타자기 감성 */
+        .dice-container.style-memo {
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+            border-left: none; border-right: none;
+            border-radius: 0;
+            background: transparent;
+        }
+        .dice-container.style-memo .dice-header {
+            font-family: 'Courier Prime', monospace;
+            border-bottom: 1px dashed #ccc;
+            font-weight: 400;
+        }
+        .dice-container.style-memo .dice-result {
+            font-family: 'Courier Prime', monospace;
+            text-decoration: underline;
+            border: none;
+            color: #000;
+        }
+
+        /* 3. Cyber (터미널) - 샤프함 */
+        .dice-container.style-cyber {
+            border: 1px solid #94a3b8;
+            border-left: 4px solid #475569;
+            border-radius: 0;
+        }
+        .dice-container.style-cyber .dice-header {
+            text-align: left; padding-left: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.8rem; color: #64748b;
+        }
+        .dice-container.style-cyber .dice-header::before { content: ":: "; color: #94a3b8; }
+        .dice-container.style-cyber .dice-body { text-align: left; padding-left: 10px; font-weight: 700; }
+        .dice-container.style-cyber .dice-result-wrapper { text-align: right; padding-right: 10px; }
+        .dice-container.style-cyber .dice-result {
+            border: 1px solid #475569;
+            background: transparent; color: #1e293b;
+            border-radius: 0;
+        }
+
+        /* 4. Fantasy (클래식) - 세리프 */
+        .dice-container.style-fantasy {
+            border: 1px solid #a8a29e;
+            border-radius: 2px;
+            outline: 1px solid #d6d3d1; /* 이중선 효과 */
+            outline-offset: -3px;
+        }
+        .dice-container.style-fantasy .dice-header {
+            font-family: var(--font-serif);
+            border-bottom: 1px solid #e7e5e4;
+            font-style: italic;
+        }
+        .dice-container.style-fantasy .dice-result {
+            font-family: var(--font-serif);
+            border-top: 1px solid #a8a29e;
+            border-bottom: 1px solid #a8a29e;
+            border-left: none; border-right: none;
+            border-radius: 0;
+            color: #44403c;
+        }
 
         .system-box {
             font-size: 9.5pt; color: #64748b; text-align: center;
@@ -362,81 +397,110 @@
 <body class="h-screen flex overflow-hidden selection:bg-indigo-100 selection:text-indigo-900">
 
     <!-- 사이드바 -->
-    <aside id="sidebar" class="w-80 flex flex-col z-30 shadow-sm transition-transform duration-300">
-        <div class="sidebar-header p-6 flex flex-col gap-1">
-            <h1 class="text-xl font-bold flex items-center gap-2 text-slate-800 tracking-tight">
-                <i data-lucide="book-open-check" class="text-indigo-600"></i> 
-                CCfolia 리플레이북 변환기
+    <aside id="sidebar" class="w-80 flex flex-col z-30 transition-transform duration-300">
+        <div class="sidebar-header p-5 flex flex-col gap-1">
+            <h1 class="text-lg font-bold flex items-center gap-2 text-slate-800 tracking-tight">
+                <i data-lucide="book-open-check" class="text-indigo-600" size="20"></i> 
+                TRPG Editor
             </h1>
-            <p class="text-xs text-slate-400 font-medium pl-8">코코포리아 로그를 전자책/pdf 풍으로 변환해줍니다.<p>
+            <p class="text-[10px] text-slate-400 font-medium pl-7">Replay Book Converter v14.0</p>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-8">
+        <div class="flex-1 overflow-y-auto px-5 py-4 space-y-6">
             
             <!-- 섹션 1: 파일 -->
             <div>
                 <div class="section-label">
-                    <i data-lucide="folder-open" size="14"></i> Source Files
+                    <i data-lucide="folder-open" size="12"></i> Source Files
                 </div>
-                <div class="input-wrapper">
-                    <label>표지 이미지</label>
-                    <input type="file" id="coverInput" accept="image/*" class="ui-input ui-file-input"/>
+                <div class="grid grid-cols-2 gap-2 mb-1">
+                    <div>
+                        <label class="custom-file-btn" for="coverInput">
+                            <i data-lucide="image" size="18"></i>
+                            <span>표지</span>
+                        </label>
+                        <input type="file" id="coverInput" accept="image/*" class="hidden" onchange="handleFileSelect('coverInput')"/>
+                    </div>
+                    <div>
+                        <label class="custom-file-btn" for="htmlInput">
+                            <i data-lucide="file-text" size="18"></i>
+                            <span>로그</span>
+                        </label>
+                        <input type="file" id="htmlInput" accept=".html" class="hidden" onchange="handleFileSelect('htmlInput')"/>
+                    </div>
                 </div>
-                <div class="input-wrapper">
-                    <label>CCfolia 로그 (.html)</label>
-                    <input type="file" id="htmlInput" accept=".html" class="ui-input ui-file-input"/>
-                </div>
+                <!-- 표지 사이즈 안내 (요청사항) -->
+                <p class="text-[10px] text-slate-400 text-center tracking-tight">
+                    권장: A5(1748x2480) / 모바일(1080x1920)
+                </p>
+                <div id="file-status" class="text-[10px] text-indigo-500 mt-1 text-center h-3 font-bold"></div>
             </div>
 
             <!-- 섹션 2: 설정 -->
             <div>
                 <div class="section-label">
-                    <i data-lucide="sliders" size="14"></i> Preferences
+                    <i data-lucide="sliders" size="12"></i> Preferences
                 </div>
 
                 <div class="input-wrapper">
                     <label>용지 크기</label>
                     <div class="ui-toggle-group">
-                        <button id="sizeA5" class="ui-toggle-btn active" onclick="setPageSize('A5')">A5 (책)</button>
-                        <button id="sizeMobile" class="ui-toggle-btn" onclick="setPageSize('Mobile')">모바일</button>
+                        <button id="sizeA5" class="toggle-btn active" onclick="setPageSize('A5')">A5 (책)</button>
+                        <button id="sizeMobile" class="toggle-btn" onclick="setPageSize('Mobile')">모바일</button>
                     </div>
                     <p class="text-[10px] text-slate-400 mt-1 text-right" id="sizeHelperText">10.5pt / 1.6</p>
+                </div>
+
+                <div class="input-wrapper">
+                    <label>
+                        판정 박스 디자인
+                        <button onclick="openPreviewModal()" class="text-slate-400 hover:text-indigo-500 transition-colors">
+                            <i data-lucide="help-circle" size="12"></i>
+                        </button>
+                    </label>
+                    <!-- 4개 한 줄 배열 (요청사항) -->
+                    <div class="grid grid-cols-4 gap-1 bg-f1f5f9 p-0.5 border border-e2e8f0 rounded-[0.3rem]">
+                        <button id="diceDefault" class="toggle-btn active" onclick="setDiceStyle('default')">기본</button>
+                        <button id="diceMemo" class="toggle-btn" onclick="setDiceStyle('memo')">메모</button>
+                        <button id="diceCyber" class="toggle-btn" onclick="setDiceStyle('cyber')">터미널</button>
+                        <button id="diceFantasy" class="toggle-btn" onclick="setDiceStyle('fantasy')">고전</button>
+                    </div>
                 </div>
                 
                 <div class="input-wrapper">
                     <label>대사 레이아웃</label>
                     <div class="ui-toggle-group">
-                        <button id="layoutVertical" class="ui-toggle-btn active" onclick="setLayout('vertical')">상하(기본)</button>
-                        <button id="layoutSide" class="ui-toggle-btn" onclick="setLayout('side')">좌우(대본)</button>
+                        <button id="layoutVertical" class="toggle-btn active" onclick="setLayout('vertical')">상하(기본)</button>
+                        <button id="layoutSide" class="toggle-btn" onclick="setLayout('side')">좌우(대본)</button>
                     </div>
                 </div>
 
                 <div class="input-wrapper">
-                    <label>나레이션 이름 설정</label>
+                    <label>나레이션 이름 (지문 처리)</label>
                     <input type="text" id="narratorNameInput" placeholder="예: GM, system, ::" class="ui-input" onchange="reprocessLogs()">
                 </div>
 
                 <div class="input-wrapper">
                     <label>지문 정렬</label>
                     <div class="ui-toggle-group">
-                        <button id="alignLeft" class="ui-toggle-btn" onclick="setNarrationAlign('left')">왼쪽</button>
-                        <button id="alignCenter" class="ui-toggle-btn active" onclick="setNarrationAlign('center')">가운데</button>
+                        <button id="alignLeft" class="toggle-btn" onclick="setNarrationAlign('left')">왼쪽</button>
+                        <button id="alignCenter" class="toggle-btn active" onclick="setNarrationAlign('center')">가운데</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="grid grid-cols-2 gap-2 mb-4">
                     <div>
                         <label>대사 폰트</label>
                         <div class="ui-toggle-group">
-                            <button id="diaSerif" class="ui-toggle-btn" onclick="setFont('dialogue', 'serif')">명조</button>
-                            <button id="diaSans" class="ui-toggle-btn active" onclick="setFont('dialogue', 'sans')">고딕</button>
+                            <button id="diaSerif" class="toggle-btn" onclick="setFont('dialogue', 'serif')">명조</button>
+                            <button id="diaSans" class="toggle-btn active" onclick="setFont('dialogue', 'sans')">고딕</button>
                         </div>
                     </div>
                     <div>
                         <label>지문 폰트</label>
                         <div class="ui-toggle-group">
-                            <button id="narSerif" class="ui-toggle-btn active" onclick="setFont('narration', 'serif')">명조</button>
-                            <button id="narSans" class="ui-toggle-btn" onclick="setFont('narration', 'sans')">고딕</button>
+                            <button id="narSerif" class="toggle-btn active" onclick="setFont('narration', 'serif')">명조</button>
+                            <button id="narSans" class="toggle-btn" onclick="setFont('narration', 'sans')">고딕</button>
                         </div>
                     </div>
                 </div>
@@ -444,12 +508,12 @@
         </div>
 
         <!-- 하단 액션 버튼 -->
-        <div class="p-6 border-t border-slate-100 bg-white grid grid-cols-2 gap-3">
-            <button onclick="window.print()" class="flex justify-center items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-lg transition-all active:scale-95 text-sm">
-                <i data-lucide="printer" size="16"></i> PDF
+        <div class="p-5 border-t border-slate-100 bg-white grid grid-cols-2 gap-2">
+            <button onclick="window.print()" class="flex justify-center items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-3 rounded-md transition-all active:scale-95 text-xs">
+                <i data-lucide="printer" size="14"></i> PDF
             </button>
-            <button onclick="openEpubModal()" class="flex justify-center items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all active:scale-95 shadow-md shadow-indigo-100 text-sm">
-                <i data-lucide="book-down" size="16"></i> EPUB
+            <button onclick="openEpubModal()" class="flex justify-center items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-3 rounded-md transition-all active:scale-95 shadow-sm shadow-indigo-100 text-xs">
+                <i data-lucide="book-down" size="14"></i> EPUB
             </button>
         </div>
     </aside>
@@ -461,8 +525,8 @@
         <div id="floating-toolbar" class="absolute top-6 z-20 flex gap-4 no-print pointer-events-auto">
             <!-- 편집 모드 토글 -->
             <div class="group relative">
-                <button id="edit-btn" onclick="toggleEditMode()" class="bg-white/80 backdrop-blur-md text-slate-600 hover:text-indigo-600 p-2.5 rounded-full shadow-lg border border-white/50 transition-all hover:scale-105 active:scale-95">
-                    <i data-lucide="pencil" size="20"></i>
+                <button id="edit-btn" onclick="toggleEditMode()" class="bg-white text-slate-600 hover:text-indigo-600 p-2 rounded-full border border-slate-200 transition-all hover:scale-105 active:scale-95 shadow-sm">
+                    <i data-lucide="pencil" size="18"></i>
                 </button>
                 <div class="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     편집 모드 (클릭하여 수정)
@@ -470,8 +534,8 @@
             </div>
 
             <!-- 페이지 인디케이터 -->
-            <div class="bg-white/80 backdrop-blur-md text-slate-600 px-5 py-2 rounded-full shadow-lg border border-white/50 flex items-center gap-3 font-mono text-sm">
-                <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Page</span>
+            <div class="bg-white text-slate-600 px-4 py-1.5 rounded-full border border-slate-200 flex items-center gap-2 font-mono text-xs shadow-sm">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Page</span>
                 <input type="number" id="pageInput" value="1" min="1" class="w-8 text-center bg-transparent outline-none font-bold text-slate-800 border-b border-transparent focus:border-indigo-500 transition-colors" onchange="jumpToPage(this.value)">
                 <span class="text-slate-400">/</span>
                 <span id="totalPageLabel" class="text-slate-500">0</span>
@@ -481,23 +545,21 @@
         <!-- 책 렌더링 컨테이너 -->
         <div id="book-viewport" class="flex-1 w-full overflow-hidden flex items-center justify-center relative">
             
-            <!-- 네비게이션 버튼 (양옆) -->
-            <button onclick="changePage(-1)" id="btnPrev" class="absolute left-8 z-10 p-3 rounded-full text-slate-400 hover:text-indigo-600 hover:bg-white/50 transition-all disabled:opacity-0">
+            <button onclick="changePage(-1)" id="btnPrev" class="absolute left-6 z-10 p-2 rounded-full text-slate-400 hover:text-indigo-600 hover:bg-white transition-all disabled:opacity-0">
                 <i data-lucide="chevron-left" size="32"></i>
             </button>
-            <button onclick="changePage(1)" id="btnNext" class="absolute right-8 z-10 p-3 rounded-full text-slate-400 hover:text-indigo-600 hover:bg-white/50 transition-all disabled:opacity-0">
+            <button onclick="changePage(1)" id="btnNext" class="absolute right-6 z-10 p-2 rounded-full text-slate-400 hover:text-indigo-600 hover:bg-white transition-all disabled:opacity-0">
                 <i data-lucide="chevron-right" size="32"></i>
             </button>
 
-            <!-- 실제 책 페이지가 들어가는 곳 -->
-            <div id="book-container" class="relative shadow-2xl transition-all duration-300">
-                <!-- 초기 안내 -->
-                <div id="placeholder-page" class="book-page active flex flex-col justify-center items-center text-slate-300 border border-dashed border-slate-200 bg-white">
-                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                        <i data-lucide="file-up" size="32" class="text-slate-400"></i>
+            <!-- 책 페이지 (배경 그림자 제거됨) -->
+            <div id="book-container" class="relative transition-all duration-300">
+                <div id="placeholder-page" class="book-page active flex flex-col justify-center items-center text-slate-300 bg-white" style="border: 1px dashed #cbd5e1;">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+                        <i data-lucide="file-up" size="28" class="text-slate-400"></i>
                     </div>
-                    <p class="text-lg font-bold text-slate-500">파일을 업로드해주세요</p>
-                    <p class="text-xs mt-1 text-slate-400">.html 로그 파일을 드래그하거나 선택하세요</p>
+                    <p class="text-base font-bold text-slate-500">파일 업로드</p>
+                    <p class="text-[10px] mt-1 text-slate-400">.html 로그 파일을 드래그하세요</p>
                 </div>
             </div>
         </div>
@@ -508,36 +570,82 @@
 
     <!-- 오버레이: 로딩 -->
     <div id="loading-overlay" class="overlay flex-col" style="display: none;">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col items-center">
-            <div class="text-indigo-600 mb-4">
-                <i data-lucide="loader-2" class="animate-spin" size="32"></i>
-            </div>
-            <div class="text-slate-700 text-lg font-bold mb-2">변환 중입니다</div>
-            <div class="progress-bar-container w-48 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+        <div class="bg-white p-6 rounded-xl border border-slate-200 flex flex-col items-center shadow-lg">
+            <div class="text-indigo-600 mb-3"><i data-lucide="loader-2" class="animate-spin" size="28"></i></div>
+            <div class="text-slate-700 text-sm font-bold mb-2">변환 중입니다</div>
+            <div class="progress-bar-container w-40 bg-slate-100 h-1 rounded-full overflow-hidden">
                 <div id="progress-bar" class="bg-indigo-500 h-full w-0 transition-all duration-100"></div>
             </div>
-            <div id="loading-text" class="text-slate-400 text-xs mt-3 font-mono">준비 중...</div>
+            <div id="loading-text" class="text-slate-400 text-[10px] mt-2 font-mono">준비 중...</div>
+        </div>
+    </div>
+
+    <!-- 오버레이: 판정 예시 모달 -->
+    <div id="preview-modal" class="overlay" style="display: none;" onclick="closePreviewModal()">
+        <div class="modal-box preview-modal-box p-6" onclick="event.stopPropagation()">
+            <h2 class="text-slate-800 font-bold mb-5 text-center text-sm">판정 박스 디자인 예시</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <!-- 기본 -->
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase">기본 (Simple)</p>
+                    <div class="dice-container style-default" style="width: 100%; margin: 0;">
+                        <div class="dice-header">관찰력 판정</div>
+                        <div class="dice-body">CC&lt;=50 (1D100&lt;=50)</div>
+                        <div class="dice-result-wrapper"><span class="dice-result">성공</span></div>
+                    </div>
+                </div>
+                <!-- 메모 -->
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase">메모 (Memo)</p>
+                    <div class="dice-container style-memo" style="width: 100%; margin: 0;">
+                        <div class="dice-header">듣기 판정</div>
+                        <div class="dice-body">CC&lt;=25 (1D100&lt;=25)</div>
+                        <div class="dice-result-wrapper"><span class="dice-result">실패</span></div>
+                    </div>
+                </div>
+                <!-- 사이버 -->
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase">터미널 (Cyber)</p>
+                    <div class="dice-container style-cyber" style="width: 100%; margin: 0;">
+                        <div class="dice-header">해킹 시도</div>
+                        <div class="dice-body">CC&lt;=80 (1D100&lt;=80)</div>
+                        <div class="dice-result-wrapper"><span class="dice-result">성공</span></div>
+                    </div>
+                </div>
+                <!-- 판타지 -->
+                <div>
+                    <p class="text-[10px] text-slate-400 font-bold mb-1 uppercase">고전 (Fantasy)</p>
+                    <div class="dice-container style-fantasy" style="width: 100%; margin: 0;">
+                        <div class="dice-header">마법 감지</div>
+                        <div class="dice-body">CC&lt;=60 (1D100&lt;=60)</div>
+                        <div class="dice-result-wrapper"><span class="dice-result">대성공</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 text-center cursor-pointer text-slate-400 text-xs hover:text-slate-600" onclick="closePreviewModal()">
+                닫기
+            </div>
         </div>
     </div>
 
     <!-- 오버레이: EPUB 모달 -->
     <div id="epub-modal" class="overlay" style="display: none;">
-        <div class="bg-white rounded-xl shadow-2xl p-6 w-[360px] border border-slate-100">
-            <h2 class="text-slate-800 font-bold mb-6 flex items-center gap-2 text-lg">
-                <i data-lucide="book-down" class="text-indigo-500"></i> EPUB 내보내기
+        <div class="modal-box shadow-xl bg-white p-6 rounded-xl w-[320px]">
+            <h2 class="text-slate-800 font-bold mb-5 flex items-center gap-2 text-base">
+                <i data-lucide="book-down" class="text-indigo-500" size="18"></i> EPUB 정보 입력
             </h2>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wide">Title</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">책 제목</label>
                     <input type="text" id="modal-title" class="ui-input" value="TRPG Replay Log">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wide">Author</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">저자</label>
                     <input type="text" id="modal-author" class="ui-input" value="Unknown">
                 </div>
-                <div class="flex gap-3 mt-8">
-                    <button onclick="closeEpubModal()" class="flex-1 py-2.5 rounded-lg bg-slate-100 text-slate-600 text-sm font-medium hover:bg-slate-200 transition-colors">취소</button>
-                    <button onclick="startEpubExport()" class="flex-1 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-500 shadow-lg shadow-indigo-200 transition-all transform active:scale-95">저장하기</button>
+                <div class="flex gap-2 mt-6">
+                    <button onclick="closeEpubModal()" class="flex-1 py-2 rounded-md bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200">취소</button>
+                    <button onclick="startEpubExport()" class="flex-1 py-2 rounded-md bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow-sm">저장</button>
                 </div>
             </div>
         </div>
@@ -546,15 +654,14 @@
     <script>
         lucide.createIcons();
 
-        /* ----------------------------------------------------------------
-           전역 상태 & 변수
-           ---------------------------------------------------------------- */
+        /* 전역 변수 */
         const state = {
             pageSize: 'A5', 
             layout: 'vertical', 
             narrationAlign: 'center',
             fontDialogue: 'sans', 
             fontNarration: 'serif',
+            diceStyle: 'default', 
             isEditMode: false
         };
 
@@ -570,7 +677,8 @@
             progressBar: document.getElementById('progress-bar'),
             loadingText: document.getElementById('loading-text'),
             editBtn: document.getElementById('edit-btn'),
-            epubModal: document.getElementById('epub-modal')
+            epubModal: document.getElementById('epub-modal'),
+            previewModal: document.getElementById('preview-modal')
         };
         
         let currentCoverData = null;
@@ -579,13 +687,13 @@
         let mergedLogs = [];
         let currentPageIndex = 0;
         let totalPages = 0;
-        let MAX_CONTENT_HEIGHT_PX = 525; // A5 Default
+        let MAX_CONTENT_HEIGHT_PX = 525; 
 
-        /* ----------------------------------------------------------------
-           이벤트 핸들러
-           ---------------------------------------------------------------- */
+        /* 이벤트 핸들러 */
         function isOverlayVisible() {
-            return elements.loadingOverlay.style.display !== 'none' || elements.epubModal.style.display !== 'none';
+            return elements.loadingOverlay.style.display !== 'none' || 
+                   elements.epubModal.style.display !== 'none' ||
+                   elements.previewModal.style.display !== 'none';
         }
         function isInputFocused() {
             const el = document.activeElement;
@@ -603,16 +711,12 @@
         document.addEventListener('wheel', (e) => {
             if (state.isEditMode || isOverlayVisible() || isInputFocused()) return;
             if (isScrolling) return;
-            
             if (e.deltaY > 50) { changePage(1); isScrolling = true; } 
             else if (e.deltaY < -50) { changePage(-1); isScrolling = true; }
-
             if (isScrolling) setTimeout(() => { isScrolling = false; }, 400);
         });
 
-        /* ----------------------------------------------------------------
-           기능 함수: UI & 로직
-           ---------------------------------------------------------------- */
+        /* 로딩 UI */
         function showLoading(show, message="변환 중...") {
             elements.loadingOverlay.style.display = show ? 'flex' : 'none';
             if (show) {
@@ -620,7 +724,6 @@
                 updateLoading(0, 0);
             }
         }
-
         function updateLoading(percent, pageCount) {
             elements.progressBar.style.width = `${percent}%`;
             if (pageCount !== undefined && pageCount !== null) {
@@ -628,60 +731,71 @@
             }
         }
 
+        /* 모달 제어 */
         function openEpubModal() {
-            if (mergedLogs.length === 0) {
-                alert("먼저 로그 파일을 불러와주세요.");
-                return;
-            }
+            if (mergedLogs.length === 0) { alert("먼저 로그 파일을 불러와주세요."); return; }
             elements.epubModal.style.display = 'flex';
         }
-        function closeEpubModal() {
-            elements.epubModal.style.display = 'none';
-        }
-        function startEpubExport() {
-            closeEpubModal();
-            exportEPUB();
-        }
+        function closeEpubModal() { elements.epubModal.style.display = 'none'; }
+        function startEpubExport() { closeEpubModal(); exportEPUB(); }
+        
+        function openPreviewModal() { elements.previewModal.style.display = 'flex'; }
+        function closePreviewModal() { elements.previewModal.style.display = 'none'; }
 
+        /* 편집 모드 */
         function toggleEditMode() {
             state.isEditMode = !state.isEditMode;
             const btn = elements.editBtn;
-            
             if (state.isEditMode) {
-                btn.className = "bg-indigo-600 text-white p-2.5 rounded-full shadow-lg border border-indigo-500 transition-all scale-110";
+                btn.className = "bg-indigo-600 text-white p-2 rounded-full shadow-md border border-indigo-500 transition-all scale-110";
                 document.body.classList.add('edit-mode-active');
             } else {
-                btn.className = "bg-white/80 backdrop-blur-md text-slate-600 hover:text-indigo-600 p-2.5 rounded-full shadow-lg border border-white/50 transition-all hover:scale-105 active:scale-95";
+                btn.className = "bg-white text-slate-600 hover:text-indigo-600 p-2 rounded-full border border-slate-200 transition-all hover:scale-105 active:scale-95 shadow-sm";
                 document.body.classList.remove('edit-mode-active');
             }
-
             const editables = elements.bookContainer.querySelectorAll('.char-name, .dialogue-text, .narration-box, .dice-line, .dice-body, .dice-result, .system-box');
             editables.forEach(el => el.contentEditable = state.isEditMode);
         }
 
+        /* 설정 변경 */
         function updateToggleUI(groupId, activeValue) {
-            if(groupId==='size') {
-                document.getElementById('sizeA5').className = `ui-toggle-btn ${activeValue==='A5'?'active':''}`;
-                document.getElementById('sizeMobile').className = `ui-toggle-btn ${activeValue==='Mobile'?'active':''}`;
-            } else if(groupId==='layout') {
-                document.getElementById('layoutVertical').className = `ui-toggle-btn ${activeValue==='vertical'?'active':''}`;
-                document.getElementById('layoutSide').className = `ui-toggle-btn ${activeValue==='side'?'active':''}`;
-            } else if(groupId==='align') {
-                document.getElementById('alignLeft').className = `ui-toggle-btn ${activeValue==='left'?'active':''}`;
-                document.getElementById('alignCenter').className = `ui-toggle-btn ${activeValue==='center'?'active':''}`;
-            } else if(groupId==='dia') {
-                document.getElementById('diaSerif').className = `ui-toggle-btn ${activeValue==='serif'?'active':''}`;
-                document.getElementById('diaSans').className = `ui-toggle-btn ${activeValue==='sans'?'active':''}`;
-            } else if(groupId==='nar') {
-                document.getElementById('narSerif').className = `ui-toggle-btn ${activeValue==='serif'?'active':''}`;
-                document.getElementById('narSans').className = `ui-toggle-btn ${activeValue==='sans'?'active':''}`;
+            if (groupId === 'diceStyle') {
+                 ['default', 'memo', 'cyber', 'fantasy'].forEach(style => {
+                     document.getElementById(`dice${style.charAt(0).toUpperCase() + style.slice(1)}`).className = 
+                        `toggle-btn ${activeValue === style ? 'active' : ''}`;
+                 });
+                 return;
             }
+            if(groupId==='size') {
+                document.getElementById('sizeA5').className = `toggle-btn ${activeValue==='A5'?'active':''}`;
+                document.getElementById('sizeMobile').className = `toggle-btn ${activeValue==='Mobile'?'active':''}`;
+            } else if(groupId==='layout') {
+                document.getElementById('layoutVertical').className = `toggle-btn ${activeValue==='vertical'?'active':''}`;
+                document.getElementById('layoutSide').className = `toggle-btn ${activeValue==='side'?'active':''}`;
+            } else if(groupId==='align') {
+                document.getElementById('alignLeft').className = `toggle-btn ${activeValue==='left'?'active':''}`;
+                document.getElementById('alignCenter').className = `toggle-btn ${activeValue==='center'?'active':''}`;
+            } else if(groupId==='dia') {
+                document.getElementById('diaSerif').className = `toggle-btn ${activeValue==='serif'?'active':''}`;
+                document.getElementById('diaSans').className = `toggle-btn ${activeValue==='sans'?'active':''}`;
+            } else if(groupId==='nar') {
+                document.getElementById('narSerif').className = `toggle-btn ${activeValue==='serif'?'active':''}`;
+                document.getElementById('narSans').className = `toggle-btn ${activeValue==='sans'?'active':''}`;
+            }
+        }
+
+        function setDiceStyle(style) { state.diceStyle = style; updateToggleUI('diceStyle', style); if(mergedLogs.length > 0) reprocessLogs(); }
+        function setLayout(mode) { state.layout = mode; updateToggleUI('layout', mode); if(mergedLogs.length > 0) reprocessLogs(); }
+        function setNarrationAlign(align) { state.narrationAlign = align; updateToggleUI('align', align); if(mergedLogs.length > 0) reprocessLogs(); }
+        function setFont(target, type) {
+            if (target === 'dialogue') { state.fontDialogue = type; updateToggleUI('dia', type); } 
+            else if (target === 'narration') { state.fontNarration = type; updateToggleUI('nar', type); }
+            if(mergedLogs.length > 0) reprocessLogs();
         }
 
         function setPageSize(size) {
             state.pageSize = size;
             updateToggleUI('size', size);
-            
             const root = document.documentElement;
             const sizeHelper = document.getElementById('sizeHelperText');
 
@@ -716,62 +830,39 @@
             document.head.appendChild(style);
         }
 
-        function setLayout(mode) {
-            state.layout = mode;
-            updateToggleUI('layout', mode);
-            if(mergedLogs.length > 0) reprocessLogs();
-        }
-        function setNarrationAlign(align) {
-            state.narrationAlign = align;
-            updateToggleUI('align', align);
-            if(mergedLogs.length > 0) reprocessLogs();
-        }
-        function setFont(target, type) {
-            if (target === 'dialogue') {
-                state.fontDialogue = type;
-                updateToggleUI('dia', type);
-            } else if (target === 'narration') {
-                state.fontNarration = type;
-                updateToggleUI('nar', type);
+        /* --- 파일 처리 --- */
+        function handleFileSelect(inputId) {
+            const input = document.getElementById(inputId);
+            const status = document.getElementById('file-status');
+            
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                const parent = input.parentElement.querySelector('label');
+                parent.style.borderColor = '#6366f1';
+                parent.style.color = '#6366f1';
+                parent.style.backgroundColor = '#eff6ff';
+                
+                if (inputId === 'coverInput') {
+                    const reader = new FileReader();
+                    reader.onload = (e) => { currentCoverData = e.target.result; reprocessLogs(); };
+                    reader.readAsDataURL(input.files[0]);
+                } else if (inputId === 'htmlInput') {
+                    const reader = new FileReader();
+                    reader.onload = (e) => { rawHtmlContent = e.target.result; reprocessLogs(); };
+                    reader.readAsText(input.files[0]);
+                    status.textContent = "로그 로드 완료";
+                }
             }
-            if(mergedLogs.length > 0) reprocessLogs();
         }
-
-        /* --- 파일 처리 및 파싱 --- */
-        elements.coverInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    currentCoverData = e.target.result;
-                    reprocessLogs();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        elements.htmlInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                rawHtmlContent = e.target.result;
-                reprocessLogs();
-            };
-            reader.readAsText(file);
-        });
 
         function reprocessLogs() {
             if (!rawHtmlContent) return;
-            if (state.isEditMode) {
-                elements.editModeToggle.checked = false;
-                toggleEditMode();
-            }
+            if (state.isEditMode) { elements.editModeToggle.checked = false; toggleEditMode(); }
             showLoading(true);
             setTimeout(() => { parseLog(rawHtmlContent); }, 50);
         }
 
-        /* --- 파싱 로직 --- */
+        /* --- 파싱 --- */
         const STRICT_DICE_PATTERNS = [ /CC\(\d+\)/i, /CC<=\d+/i, /\d+D\d+/i, /choice\[/i, /\d+\s*>\s*\d+/, /\d+\s*＞\s*\d+/ ];
 
         function getLogType(name, text, customNarrator) {
@@ -794,13 +885,10 @@
                 if (spans.length >= 3) {
                     let name = spans[1].textContent.trim();
                     let rawTextParts = [];
-                    for (let i = 2; i < spans.length; i++) {
-                        rawTextParts.push(spans[i].innerHTML);
-                    }
+                    for (let i = 2; i < spans.length; i++) rawTextParts.push(spans[i].innerHTML);
                     let joinedText = rawTextParts.join('');
                     let text = joinedText.trim().replace(/<br\s*\/?>/gi, '\n'); 
-                    let tempDiv = document.createElement("div");
-                    tempDiv.innerHTML = text;
+                    let tempDiv = document.createElement("div"); tempDiv.innerHTML = text;
                     text = tempDiv.textContent || tempDiv.innerText || "";
                     let type = getLogType(name, text, customNarrator);
                     parsedLogs.push({ type, name, text });
@@ -813,16 +901,13 @@
             mergedLogs = [];
             if (parsedLogs.length === 0) { showLoading(false); return; }
             let currentBlock = null;
-
             parsedLogs.forEach(log => {
                 const logTextArray = Array.isArray(log.text) ? log.text : log.text.split('\n');
-
                 if (log.type === 'dice' || log.type === 'system') {
                     if (currentBlock) { mergedLogs.push(currentBlock); currentBlock = null; }
                     mergedLogs.push({ ...log, text: logTextArray });
                     return;
                 }
-                
                 if (currentBlock && currentBlock.name === log.name && currentBlock.type === log.type) {
                     currentBlock.text.push(...logTextArray);
                 } else {
@@ -838,52 +923,33 @@
             const resultKeywords = ["보통 성공", "어려운 성공", "대단한 성공", "대성공", "대실패", "실패", "Success", "Failure", "Critical", "Fumble"];
             let resultLine = "";
             let bodyText = text;
-
             for (let kw of resultKeywords) {
                 const regex = new RegExp(`(＞|>)s*${kw}\\s*$`, 'i');
-                const match = text.match(regex);
-                if (!match) {
-                     const regex2 = new RegExp(`${kw}\\s*$`, 'i');
-                     const match2 = text.match(regex2);
-                     if(match2) {
-                         resultLine = match2[0];
-                         bodyText = text.substring(0, text.lastIndexOf(resultLine));
-                         break;
-                     }
-                } else {
-                    resultLine = match[0].replace('＞', '').replace('>', '').trim();
-                    bodyText = text.substring(0, text.lastIndexOf(match[0]));
-                    break;
-                }
+                if (text.match(regex)) { resultLine = text.match(regex)[0].replace('＞', '').replace('>', '').trim(); bodyText = text.substring(0, text.lastIndexOf(text.match(regex)[0])); break; }
+                else if (text.match(new RegExp(`${kw}\\s*$`, 'i'))) { resultLine = text.match(new RegExp(`${kw}\\s*$`, 'i'))[0]; bodyText = text.substring(0, text.lastIndexOf(resultLine)); break; }
             }
             bodyText = bodyText.replace(/(\(1D\d+)/g, '<br>$1').replace(/(\d+\s*[＞>]\s*\d+)/g, '<br>$1');
-            let html = `<div class="dice-header">${logName}</div>`;
-            html += `<div class="dice-body">${bodyText}</div>`;
-            if (resultLine) {
-                html += `<div class="dice-result-wrapper"><span class="dice-result">${resultLine}</span></div>`;
-            }
+            let html = `<div class="dice-header">${logName}</div><div class="dice-body">${bodyText}</div>`;
+            if (resultLine) html += `<div class="dice-result-wrapper"><span class="dice-result">${resultLine}</span></div>`;
             return html;
         }
 
-        /* --- 렌더링 (Async) --- */
         function createLogElement(log, isContinuation = false) {
             const div = document.createElement('div');
             div.className = 'log-entry';
-
             if (log.type === 'narration') {
                 const textHtml = log.text.map(t => `<p>${t}</p>`).join('');
                 div.innerHTML = `<div class="narration-box align-${state.narrationAlign} font-${state.fontNarration}">${textHtml}</div>`;
             } else if (log.type === 'dice') {
                 const rawText = log.text.join(' ');
-                div.innerHTML = `<div class="dice-container">${formatDiceLog(log.name, rawText)}</div>`;
+                div.innerHTML = `<div class="dice-container style-${state.diceStyle}">${formatDiceLog(log.name, rawText)}</div>`;
             } else if (log.type === 'system') {
                 const txt = log.text.join(' ');
                 div.innerHTML = `<div class="system-box font-sans">${txt}</div>`;
             } else {
                 const textHtml = log.text.map(t => `<p>${t}</p>`).join('');
-                const displayName = log.name; 
                 const layoutClass = state.layout === 'side' ? 'layout-side' : '';
-                div.innerHTML = `<div class="dialogue-box ${layoutClass}"><span class="char-name font-sans">${displayName}</span><div class="dialogue-text font-${state.fontDialogue}">${textHtml}</div></div>`;
+                div.innerHTML = `<div class="dialogue-box ${layoutClass}"><span class="char-name font-sans">${log.name}</span><div class="dialogue-text font-${state.fontDialogue}">${textHtml}</div></div>`;
             }
             lucide.createIcons({ root: div });
             if (state.isEditMode) {
@@ -939,13 +1005,8 @@
                             pageContent.appendChild(tempEl); 
                             currentHeight += totalH;
                         } else {
-                            if (currentHeight === 0) {
-                                pageContent.appendChild(tempEl);
-                                currentHeight += totalH;
-                                continue;
-                            }
-                            const isMultiLine = Array.isArray(log.text) && log.text.length > 1;
-                            const canSplit = (log.type === 'dialogue' || log.type === 'narration') && isMultiLine;
+                            if (currentHeight === 0) { pageContent.appendChild(tempEl); currentHeight += totalH; continue; }
+                            const canSplit = (log.type === 'dialogue' || log.type === 'narration') && log.text.length > 1;
 
                             if (canSplit) {
                                 let fitText = [];
@@ -983,10 +1044,7 @@
                                     addPageNumber(currentPageDiv, totalPages + 1);
                                     pageContent = currentPageDiv.querySelector('.page-content');
                                     currentHeight = 0;
-                                    if (remainText.length > 0) {
-                                        queue.unshift({ ...log, text: remainText, isContinuation: true });
-                                        initialTotal++; 
-                                    }
+                                    if (remainText.length > 0) { queue.unshift({ ...log, text: remainText, isContinuation: true }); initialTotal++; }
                                 } else {
                                     elements.bookContainer.appendChild(currentPageDiv);
                                     totalPages++;
@@ -1019,12 +1077,7 @@
                 updateLoading(progress, totalPages);
                 await new Promise(r => setTimeout(r, 0));
             }
-
-            if (pageContent.hasChildNodes()) {
-                elements.bookContainer.appendChild(currentPageDiv);
-                totalPages++; 
-            }
-
+            if (pageContent.hasChildNodes()) { elements.bookContainer.appendChild(currentPageDiv); totalPages++; }
             elements.totalPageLabel.innerText = `/ ${totalPages}`;
             elements.pageInput.max = totalPages;
             currentPageIndex = 0;
@@ -1040,14 +1093,12 @@
             page.appendChild(content);
             return page;
         }
-
         function addPageNumber(pageDiv, pageNum) {
             const numDiv = document.createElement('div');
             numDiv.className = 'page-number';
             numDiv.textContent = `- ${pageNum} -`;
             pageDiv.appendChild(numDiv);
         }
-
         function updatePageDisplay() {
             const pages = document.querySelectorAll('.book-page');
             pages.forEach(p => p.classList.remove('active'));
@@ -1056,91 +1107,49 @@
             document.getElementById('btnNext').disabled = currentPageIndex === pages.length - 1;
             elements.pageInput.value = currentPageIndex + 1;
         }
-
         function changePage(delta) {
             const pages = document.querySelectorAll('.book-page');
             const newIndex = currentPageIndex + delta;
-            if (newIndex >= 0 && newIndex < pages.length) {
-                currentPageIndex = newIndex;
-                updatePageDisplay();
-            }
+            if (newIndex >= 0 && newIndex < pages.length) { currentPageIndex = newIndex; updatePageDisplay(); }
         }
-
         function jumpToPage(val) {
             const pageNum = parseInt(val);
             const pages = document.querySelectorAll('.book-page');
-            if (pageNum >= 1 && pageNum <= pages.length) {
-                currentPageIndex = pageNum - 1;
-                updatePageDisplay();
-            } else { elements.pageInput.value = currentPageIndex + 1; }
+            if (pageNum >= 1 && pageNum <= pages.length) { currentPageIndex = pageNum - 1; updatePageDisplay(); } else { elements.pageInput.value = currentPageIndex + 1; }
         }
         
         // Init
         setPageSize('A5');
 
-        // Fallback for saveAs
         function saveFile(blob, fileName) {
-            if (window.saveAs) {
-                window.saveAs(blob, fileName);
-            } else {
+            if (window.saveAs) { window.saveAs(blob, fileName); } else {
                 const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
+                const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = fileName;
+                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
             }
         }
 
-        /* --- EPUB Export --- */
         async function exportEPUB() {
             const title = document.getElementById('modal-title').value.trim() || "TRPG Replay";
             const author = document.getElementById('modal-author').value.trim() || "Unknown";
-            
             showLoading(true, "EPUB 생성 중...");
             const zip = new JSZip();
             zip.file("mimetype", "application/epub+zip", { compression: "STORE" });
             zip.file("META-INF/container.xml", `<?xml version="1.0"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>`);
-
             const oebps = zip.folder("OEBPS");
-            const cssContent = `
-                body { font-family: sans-serif; line-height: 1.6; color: #111; }
-                .log-entry { margin-bottom: 1em; }
-                .char-name { font-weight: bold; display: block; margin-bottom: 0.2em; color: #111; }
-                .dialogue-text { text-align: justify; color: #222; }
-                .dialogue-text p { margin: 0; margin-bottom: 0.2em; }
-                .narration-box { font-style: italic; text-align: center; color: #333; margin: 1em 0; }
-                .narration-box p { margin: 0; margin-bottom: 0.2em; }
-                .dice-container { border: 1px solid #999; padding: 0.5em; background: #fff; font-family: monospace; border-radius: 4px; }
-                .dice-header { font-weight: bold; padding: 0.2em; border-bottom: 1px solid #ddd; text-align: center; color: #444; }
-                .dice-body { padding: 0.5em; line-height: 1.4; text-align: center; color: #111; }
-                .dice-body-line { display: block; }
-                .dice-result { font-weight: bold; text-align: center; background: #fff; color: #000; border: 1px solid #000; border-radius: 12px; padding: 0.2em 0.8em; margin: 0 auto; display: block; width: fit-content; }
-                .system-box { text-align: center; font-size: 0.9em; color: #555; border-top: 1px double #ccc; border-bottom: 1px double #ccc; padding: 0.5em 0; }
-            `;
+            
+            const cssContent = `body { font-family: sans-serif; line-height: 1.6; color: #111; } .log-entry { margin-bottom: 1em; } .char-name { font-weight: bold; display: block; margin-bottom: 0.2em; color: #111; } .dialogue-text { text-align: justify; color: #222; } .dialogue-text p { margin: 0; margin-bottom: 0.2em; } .narration-box { font-style: italic; text-align: center; color: #333; margin: 1em 0; } .narration-box p { margin: 0; margin-bottom: 0.2em; } .dice-container { border: 1px solid #999; padding: 0.5em; background: #fff; font-family: monospace; border-radius: 4px; } .dice-header { font-weight: bold; padding: 0.2em; border-bottom: 1px solid #ddd; text-align: center; color: #444; } .dice-body { padding: 0.5em; line-height: 1.4; text-align: center; color: #111; } .dice-body-line { display: block; } .dice-result { font-weight: bold; text-align: center; background: #fff; color: #000; border: 1px solid #000; border-radius: 12px; padding: 0.2em 0.8em; margin: 0 auto; display: block; width: fit-content; } .system-box { text-align: center; font-size: 0.9em; color: #555; border-top: 1px double #ccc; border-bottom: 1px double #ccc; padding: 0.5em 0; }`;
             oebps.file("style.css", cssContent);
 
             let xhtmlContent = `<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>${title}</title><link rel="stylesheet" type="text/css" href="style.css" /></head><body>`;
-            
             mergedLogs.forEach(log => {
                 let innerHTML = "";
                 const textArray = Array.isArray(log.text) ? log.text : [log.text];
                 const textParagraphs = textArray.map(t => `<p>${t}</p>`).join('\n');
-
-                if (log.type === 'narration') {
-                    innerHTML = `<div class="narration-box">\n${textParagraphs}\n</div>`;
-                } else if (log.type === 'dice') {
-                    const rawText = Array.isArray(log.text) ? log.text.join(' ') : log.text;
-                    innerHTML = `<div class="dice-container">${formatDiceLog(log.name, rawText)}</div>`;
-                } else if (log.type === 'system') {
-                    const text = Array.isArray(log.text) ? log.text.join(' ') : log.text;
-                    innerHTML = `<div class="system-box">${text}</div>`;
-                } else {
-                    innerHTML = `<div class="log-entry">\n<span class="char-name">${log.name}</span>\n<div class="dialogue-text">\n${textParagraphs}\n</div>\n</div>`;
-                }
+                if (log.type === 'narration') innerHTML = `<div class="narration-box">\n${textParagraphs}\n</div>`;
+                else if (log.type === 'dice') innerHTML = `<div class="dice-container">${formatDiceLog(log.name, Array.isArray(log.text) ? log.text.join(' ') : log.text)}</div>`;
+                else if (log.type === 'system') innerHTML = `<div class="system-box">${Array.isArray(log.text) ? log.text.join(' ') : log.text}</div>`;
+                else innerHTML = `<div class="log-entry">\n<span class="char-name">${log.name}</span>\n<div class="dialogue-text">\n${textParagraphs}\n</div>\n</div>`;
                 xhtmlContent += innerHTML + "\n";
             });
             xhtmlContent += `</body></html>`;
@@ -1148,7 +1157,6 @@
 
             const opfContent = `<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookID" version="2.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf"><dc:title>${title}</dc:title><dc:creator opf:role="aut">${author}</dc:creator><dc:language>ko</dc:language><dc:identifier id="BookID" opf:scheme="UUID">urn:uuid:${crypto.randomUUID()}</dc:identifier></metadata><manifest><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="style" href="style.css" media-type="text/css"/><item id="content" href="content.xhtml" media-type="application/xhtml+xml"/></manifest><spine toc="ncx"><itemref idref="content"/></spine></package>`;
             oebps.file("content.opf", opfContent);
-
             const ncxContent = `<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="urn:uuid:12345"/><meta name="dtb:depth" content="1"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head><docTitle><text>${title}</text></docTitle><navMap><navPoint id="navPoint-1" playOrder="1"><navLabel><text>Start</text></navLabel><content src="content.xhtml"/></navPoint></navMap></ncx>`;
             oebps.file("toc.ncx", ncxContent);
 
