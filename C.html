@@ -39,7 +39,7 @@
         }
 
         #captureArea {
-            padding: 40px;
+            padding: 20px;
             display: inline-block;
             background: transparent;
         }
@@ -50,7 +50,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
             width: 360px;
-            min-height: 600px;
+            min-height: 550px;
             padding: 35px 25px;
             margin: 0 auto;
             transition: all 0.2s ease-out;
@@ -177,34 +177,43 @@
         /* Action Buttons on Item Hover */
         .item-actions {
             position: absolute;
-            left: -45px;
-            top: 0;
+            left: -42px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 2px;
             opacity: 0;
             transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 50;
         }
         .group:hover .item-actions {
             opacity: 1;
+            pointer-events: auto;
         }
         .item-action-btn {
             background: white;
             border: 1px solid #eee;
             border-radius: 4px;
-            padding: 2px;
-            line-height: 1;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .item-action-btn:hover {
             background: #f8f8f8;
-            border-color: #ccc;
+            border-color: #bbb;
         }
         .item-action-btn .material-symbols-outlined {
-            font-size: 16px;
+            font-size: 14px;
+        }
+
+        .item-row {
+            position: relative;
+            padding: 4px 0;
         }
     </style>
 </head>
@@ -268,7 +277,7 @@
                         <span class="material-symbols-outlined">settings</span> 설정 및 디자인
                     </h2>
                     <div class="flex items-center gap-2 bg-gray-50 p-1 px-2 rounded-lg border border-gray-200">
-                        <span class="text-[10px] font-bold text-gray-400">SLOT</span>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">Slot</span>
                         <select id="slotSelect" onchange="loadSlot(this.value)" class="text-xs bg-transparent outline-none font-bold text-accent">
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -316,7 +325,7 @@
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-bold text-gray-400 mb-1 block ml-1 uppercase">GM Memo</label>
+                    <label class="text-[10px] font-bold text-gray-400 mb-1 block ml-1 uppercase">GM Memo (SNS Share Memo)</label>
                     <textarea id="gmMemoInput" rows="1" placeholder="세션을 기념하는 짧은 메모를 남겨주세요." class="w-full p-2 border-2 border-gray-200 rounded-lg outline-none focus:border-pink-400 text-xs resize-none"></textarea>
                 </div>
                 
@@ -348,11 +357,9 @@
                             <button onclick="setQuickTag('일상')" class="quick-tag">#일상</button>
                             <button onclick="setQuickTag('시작')" class="quick-tag">#시작</button>
                             <button onclick="setQuickTag('엔딩')" class="quick-tag">#엔딩</button>
-                            <button onclick="setQuickTag('테마')" class="quick-tag">#테마</button>
                             <button onclick="setQuickTag('공포')" class="quick-tag">#공포</button>
                             <button onclick="setQuickTag('전투')" class="quick-tag">#전투</button>
                             <button onclick="setQuickTag('보스')" class="quick-tag">#보스</button>
-                            <button onclick="setQuickTag('추격')" class="quick-tag">#추격</button>
                         </div>
                     </div>
                 </div>
@@ -404,12 +411,13 @@
                     <div class="dotted-line"></div>
 
                     <div class="text-[9px] grid grid-cols-12 gap-2 font-bold mb-1 px-1 opacity-50 uppercase">
-                        <div class="col-span-6 text-left">No. item / title</div>
+                        <div class="col-span-5 text-left">No. item / title</div>
+                        <div class="col-span-1 text-center"></div>
                         <div class="col-span-2 text-center">time</div>
                         <div class="col-span-4 text-right">scene</div>
                     </div>
 
-                    <div id="itemList" class="space-y-4 min-h-[150px] py-2">
+                    <div id="itemList" class="space-y-3 min-h-[150px] py-2">
                         <div class="text-center py-10 opacity-30 italic text-xs">리스트가 비어있습니다.</div>
                     </div>
 
@@ -466,7 +474,6 @@
             bindInputToDisplay('footerMessageInput', 'displayFooterMessage', "call of cthulhu 7th edition fanmade scenario");
             bindInputToDisplay('barcodeLabelInput', 'displayBarcodeLabel', "TRPG-BGM-STORE-2025");
             
-            // GM Memo
             const memoInput = document.getElementById('gmMemoInput');
             const memoArea = document.getElementById('memoArea');
             const memoDisplay = document.getElementById('displayGmMemo');
@@ -569,14 +576,12 @@
                 const data = JSON.parse(saved);
                 items = data.items || [];
                 const s = data.settings || {};
-                
                 document.getElementById('sessionTitle').value = s.title || "";
                 document.getElementById('sessionSubtitle').value = s.subtitle || "";
                 document.getElementById('thankYouInput').value = s.thankYou || "Thank you for your session";
                 document.getElementById('footerMessageInput').value = s.footer || "call of cthulhu 7th edition fanmade scenario";
                 document.getElementById('barcodeLabelInput').value = s.barcodeLabel || "TRPG-BGM-STORE-2025";
                 document.getElementById('gmMemoInput').value = s.gmMemo || "";
-                
                 if (s.fontPreset) {
                     currentFontPreset = s.fontPreset;
                     document.getElementById('fontPresetSelect').value = s.fontPreset;
@@ -590,19 +595,16 @@
                     document.getElementById('textColorPicker').value = s.colors.text;
                     document.getElementById('accentColorPicker').value = s.colors.accent;
                 }
-                
                 document.getElementById('displaySessionTitle').innerText = s.title || "TITLE";
                 document.getElementById('displaySubtitle').innerText = s.subtitle || "Subtitle";
                 document.getElementById('displayThankYou').innerText = s.thankYou || "Thank you for your session";
                 document.getElementById('displayFooterMessage').innerText = s.footer || "call of cthulhu 7th edition fanmade scenario";
                 document.getElementById('displayBarcodeLabel').innerText = s.barcodeLabel || "TRPG-BGM-STORE-2025";
-                
                 const memoDisplay = document.getElementById('displayGmMemo');
                 const memoArea = document.getElementById('memoArea');
                 memoDisplay.innerText = s.gmMemo || "";
                 if (!s.gmMemo) memoArea.classList.add('hidden');
                 else memoArea.classList.remove('hidden');
-
             } else {
                 items = [];
                 document.getElementById('displaySessionTitle').innerText = "TITLE";
@@ -630,11 +632,9 @@
             const finalLink = videoId ? `https://youtu.be/${videoId}` : linkInput;
             const duration = document.getElementById('duration').value || "00:00";
             const scene = document.getElementById('sceneTag').value || "-";
-
             if (!title) { showToast("곡 제목을 입력해주세요."); return; }
             items.push({ id: Date.now(), title, link: finalLink, duration, scene });
             renderItems();
-            
             document.getElementById('musicTitle').value = "";
             document.getElementById('ytLink').value = "";
             document.getElementById('duration').value = "";
@@ -655,9 +655,7 @@
                 const temp = items[index];
                 items[index] = items[index + 1];
                 items[index + 1] = temp;
-            } else {
-                return;
-            }
+            } else { return; }
             renderItems();
         }
 
@@ -665,12 +663,10 @@
             editingItemId = id;
             const item = items.find(i => i.id === id);
             if (!item) return;
-
             document.getElementById('editMusicTitle').value = item.title;
             document.getElementById('editYtLink').value = item.link;
             document.getElementById('editDuration').value = item.duration;
             document.getElementById('editSceneTag').value = item.scene;
-            
             document.getElementById('editModalOverlay').style.display = 'flex';
         }
 
@@ -683,16 +679,13 @@
             if (!editingItemId) return;
             const index = items.findIndex(i => i.id === editingItemId);
             if (index === -1) return;
-
             const title = document.getElementById('editMusicTitle').value.trim();
             const linkInput = document.getElementById('editYtLink').value.trim();
             const videoId = extractYouTubeId(linkInput);
             const finalLink = videoId ? `https://youtu.be/${videoId}` : linkInput;
             const duration = document.getElementById('editDuration').value || "00:00";
             const scene = document.getElementById('editSceneTag').value || "-";
-
             if (!title) { showToast("곡 제목을 입력해주세요."); return; }
-
             items[index] = { ...items[index], title, link: finalLink, duration, scene };
             renderItems();
             closeEditModal();
@@ -703,35 +696,31 @@
             const list = document.getElementById('itemList');
             const totalCount = document.getElementById('totalCount');
             const totalDurationEl = document.getElementById('totalDuration');
-
             if (items.length === 0) {
                 list.innerHTML = `<div class="text-center py-10 opacity-30 italic text-xs">리스트가 비어있습니다.</div>`;
                 totalCount.innerText = "0";
                 totalDurationEl.innerText = "00:00";
                 return;
             }
-
             list.innerHTML = items.map((item, idx) => `
-                <div class="text-[11px] grid grid-cols-12 gap-2 group relative items-start font-bold leading-snug">
+                <div class="item-row text-[11px] grid grid-cols-12 gap-2 group relative items-start font-bold leading-snug">
                     <div class="item-actions" data-html2canvas-ignore>
                         <button onclick="moveItem(${idx}, -1)" class="item-action-btn" title="위로"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
                         <button onclick="moveItem(${idx}, 1)" class="item-action-btn" title="아래로"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
                         <button onclick="openEditModal(${item.id})" class="item-action-btn" title="수정"><span class="material-symbols-outlined">edit</span></button>
-                        <button onclick="removeItem(${item.id})" class="item-action-btn text-red-400 hover:text-red-600" title="삭제"><span class="material-symbols-outlined">delete</span></button>
+                        <button onclick="removeItem(${item.id})" class="item-action-btn text-red-500" title="삭제"><span class="material-symbols-outlined">delete</span></button>
                     </div>
-                    <div class="col-span-6 text-left break-all pr-1">
-                        <span class="flex items-center gap-1 flex-wrap">
-                            <span class="opacity-30 mr-1 text-[9px]">${(idx+1).toString().padStart(2, '0')}</span>
-                            ${item.title}
-                            ${item.link ? `<a href="${item.link}" target="_blank" data-html2canvas-ignore class="text-accent opacity-50 hover:opacity-100 transition-colors"><span class="material-symbols-outlined !text-[12px]">open_in_new</span></a>` : ''}
-                        </span>
-                        ${item.link ? `<span class="block text-[7px] opacity-30 font-normal break-all leading-tight mt-1">${item.link}</span>` : ''}
+                    <div class="col-span-5 text-left break-all pr-1">
+                        <span class="opacity-30 mr-1 text-[9px] font-normal">${(idx+1).toString().padStart(2, '0')}</span>
+                        ${item.title}
+                    </div>
+                    <div class="col-span-1 text-center">
+                        ${item.link ? `<a href="${item.link}" target="_blank" data-html2canvas-ignore class="text-accent opacity-40 hover:opacity-100 transition-colors inline-block align-middle"><span class="material-symbols-outlined !text-[12px]">open_in_new</span></a>` : ''}
                     </div>
                     <div class="col-span-2 text-center opacity-70">${item.duration}</div>
                     <div class="col-span-4 text-right break-words pl-1" style="color: var(--receipt-text)">${item.scene}</div>
                 </div>
             `).join('');
-
             totalCount.innerText = items.length;
             calculateTotalDuration(totalDurationEl);
         }
@@ -759,12 +748,8 @@
 
         function openResetModal() { document.getElementById('confirmModalOverlay').style.display = 'flex'; }
         function closeConfirmModal() { document.getElementById('confirmModalOverlay').style.display = 'none'; }
-        function confirmReset() {
-            items = [];
-            renderItems();
-            closeConfirmModal();
-            showToast("초기화되었습니다.");
-        }
+        function confirmReset() { items = []; renderItems(); closeConfirmModal(); showToast("초기화되었습니다."); }
+        document.getElementById('modalConfirmBtn').onclick = confirmReset;
 
         function generateDenseBarcode() {
             const strip = document.getElementById('barcodeStrip');
@@ -808,29 +793,39 @@
         }
 
         async function downloadImage() {
-            const captureArea = document.getElementById('captureArea');
             const receipt = document.getElementById('receipt');
             const noBg = document.getElementById('noBgToggle').checked;
+            
+            // Temporary preparation for capture
             const originalShadow = receipt.style.boxShadow;
-            const originalBg = receipt.style.backgroundColor;
             receipt.style.boxShadow = 'none';
-            if (noBg) {
-                receipt.style.backgroundColor = 'transparent';
-                document.getElementById('zigzagBottom').style.opacity = '0';
-            }
+            if (noBg) receipt.style.backgroundColor = 'transparent';
+
             showToast("이미지 생성 중...");
             try {
-                const canvas = await html2canvas(captureArea, { backgroundColor: null, scale: 3, useCORS: true });
+                const canvas = await html2canvas(receipt, {
+                    backgroundColor: null,
+                    scale: 2, // SNS optimized scale
+                    useCORS: true,
+                    onclone: (clonedDoc) => {
+                        const memoArea = clonedDoc.getElementById('memoArea');
+                        if (memoArea && !memoArea.classList.contains('hidden')) {
+                            memoArea.style.display = 'block';
+                            memoArea.style.visibility = 'visible';
+                        }
+                        const zigzag = clonedDoc.querySelector('.zigzag-bottom');
+                        if (noBg && zigzag) zigzag.style.display = 'none';
+                    }
+                });
                 const link = document.createElement('a');
-                link.download = `BGM_Receipt_${Date.now()}.png`;
+                link.download = `TRPG_BGM_Receipt_${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast("저장 완료!");
             } catch (err) { showToast("저장 실패"); }
             finally {
                 receipt.style.boxShadow = originalShadow;
-                receipt.style.backgroundColor = originalBg;
-                document.getElementById('zigzagBottom').style.opacity = '1';
+                if (noBg) receipt.style.backgroundColor = '';
             }
         }
 
